@@ -10,7 +10,7 @@ namespace TestGitConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("тест");
+            Console.WriteLine("Сделайте комит в удаленном репозитории и получите его в локальном репозитории.");
         }
     }
 }
