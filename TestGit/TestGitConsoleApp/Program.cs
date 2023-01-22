@@ -10,7 +10,7 @@ namespace TestGitConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("siski");
+            Console.WriteLine("тест");
         }
     }
 }
