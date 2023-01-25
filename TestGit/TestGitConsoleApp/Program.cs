@@ -42,7 +42,8 @@ namespace TestGitConsoleApp
                 }
             }
 
-            Console.WriteLine(numberPerson);
+            Console.WriteLine(countCalls);
+            //новое изменение
         }
     }
 }
