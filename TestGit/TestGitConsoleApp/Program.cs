@@ -13,6 +13,7 @@ namespace TestGitConsoleApp
             Console.WriteLine("Исходник.");
             //изменение
             //новое изменение
+            //еще новое изменение
         }
     }
 }
