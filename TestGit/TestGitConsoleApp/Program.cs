@@ -11,6 +11,9 @@ namespace TestGitConsoleApp
         static void Main(string[] args)
         {
             Console.WriteLine("Исходник.");
+            //изменение
+            //новое изменение
+            //еще новое изменение
         }
     }
 }
