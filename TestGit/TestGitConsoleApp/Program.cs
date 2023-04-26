@@ -12,6 +12,8 @@ namespace TestGitConsoleApp
         {
             Console.WriteLine("Исходник.");
             //task1 сделано
+            //сделал какое-то исправление в task1
+            
             //task2 сделано
         }
     }
