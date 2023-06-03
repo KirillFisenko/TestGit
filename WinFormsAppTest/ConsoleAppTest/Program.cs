@@ -4,6 +4,19 @@ public class MainClass
 {
     public static void Main()
     {
-        // put your c# code here
+        var inputLine = Console.ReadLine();
+
+        char[] array = { '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '-', '*', '/', '.', ',', ';', ':', ' ', };
+        var transformLine = inputLine
+                            .ToLower()
+                            .Split(array, StringSplitOptions.RemoveEmptyEntries)
+                            .OrderByDescending(x => x.Length)
+                            .ThenBy(x => x);
+
+        var outputResult = transformLine;
+        foreach (var item in transformLine)
+        {
+            Console.WriteLine(item);
+        }
     }
 }
