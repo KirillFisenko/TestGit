@@ -65,8 +65,10 @@
             // outputTextBox
             // 
             outputTextBox.Location = new Point(178, 292);
+            outputTextBox.Multiline = true;
             outputTextBox.Name = "outputTextBox";
-            outputTextBox.Size = new Size(572, 23);
+            outputTextBox.ScrollBars = ScrollBars.Both;
+            outputTextBox.Size = new Size(572, 116);
             outputTextBox.TabIndex = 3;
             // 
             // button
@@ -78,12 +80,13 @@
             button.TabIndex = 4;
             button.Text = "Запустить код";
             button.UseVisualStyleBackColor = true;
+            button.Click += button_Click;
             // 
             // TestForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 479);
+            ClientSize = new Size(800, 557);
             Controls.Add(button);
             Controls.Add(outputTextBox);
             Controls.Add(label2);
