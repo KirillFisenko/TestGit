@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleAppTest
+public class Main
 {
-    internal class forLinq
+    public static void Mainn()
     {
+        var text = Console.ReadLine().Split();        
+        Console.WriteLine(text.Sum(word => word.Length));
     }
 }
