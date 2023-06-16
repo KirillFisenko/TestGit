@@ -2,58 +2,39 @@
 using System.Linq;
 using System.Collections.Generic;
 
-public class Student
-{
-    public string Name { get; set; }
-    public double Score { get; set; }
-    public Student(string name, double score)
-    {
-        Name = name;
-        Score = score;
-    }
-}
 public class MainClass
 {
     public static void Main()
     {
         var N = int.Parse(Console.ReadLine());
-        var students = new Student[N];
-        for (int i = 0; i < N; i++)
-        {
-            var line = Console.ReadLine().Split();
-            var name = string.Join(" ", line.Take(2));
-            var score = int.Parse(line[2]);
-            var student = new Student(name, score);
-            students[i] = student;
-        }
-        SelectionSort(students);
-        for (int i = students.Length - 1; i > students.Length - 4; i--)
-        {
-            Console.WriteLine(students[i].Name);
-        }
+        var input = Console.ReadLine().Split().Select(int.Parse).ToArray();
+        InsertionSort(input);
     }
 
-    static void SelectionSort(Student[] array)
+    static void InsertionSort(int[] array)
     {
-        for (int i = array.Length - 1; i > array.Length - 4; i--) // на какое место будем ставим наибольший элемент
+        int buffer;
+        for (int i = 1; i < array.Length; i++)
         {
-            int maxIndex = i; // индекс максимального элемента
-            for (int j = 0; j < i; j++) // проходим по не отсортированной последовательности
+            var flag = false;
+            buffer = array[i]; // запоминаем в буфер элемент, который нужно вставить нужное место
+
+            int j = i; // индекс места, куда будем вставлять buffer
+
+            // пока не дошли до начала массива и очередной элемент больше буфера
+            while (j > 0 && array[j - 1] > buffer)
             {
-                if (array[j].Score > array[maxIndex].Score)// ищем максимальный элемент
-                {
-                    maxIndex = j; // запоминаем индекс
-                }
+                array[j] = array[j - 1]; // перемещаем больший элемент на одну позицию вправо
+                j--; // передвигаем индекс для просмотра элемента, который стоит левее
+                flag = true;
             }
 
-            // если нашли максимальный элемент, отличный от текущего числа
-            if (maxIndex != i)
+            array[j] = buffer; // место найдено, вставить элемент
+            if (flag)
             {
-                // меняем местами
-                var temp = array[maxIndex];
-                array[maxIndex] = array[i];
-                array[i] = temp;
+                Console.WriteLine(string.Join(" ", array));
             }
+            
         }
-    }​
+    }
 }
