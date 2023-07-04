@@ -33,6 +33,7 @@ public class MainClass
             if (flag)
             {
                 Console.WriteLine(string.Join(" ", array));
+                //safasf
             }
             
         }
