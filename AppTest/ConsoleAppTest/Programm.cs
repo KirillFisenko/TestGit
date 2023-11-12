@@ -1,49 +1,41 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Collections;
 
-public class MainClass
+namespace CSharpEssentials
 {
-    public static void Main()
-    {
-        var N = int.Parse(Console.ReadLine());
-        var students = new Student[N];
-        for (int i = 0; i < N; i++)
-        {
-            var line = Console.ReadLine().Split();
-            var name = string.Join(" ", line.Take(2));
-            var score = int.Parse(line[2]);
-            var student = new Student(name, score);
-            students[i] = student;
-        }
-        SelectionSort(students);
-        for (int i = students.Length - 1; i > students.Length - 4; i--)
-        {
-            Console.WriteLine(students[i].Name);
-        }
-    }
+	class Animal
+	{
+		public string Name { get; set; }
+	}
 
-    static void SelectionSort(Student[] array)
-    {
-        for (int i = array.Length - 1; i > array.Length - 4; i--) // на какое место будем ставим наибольший элемент
-        {
-            int maxIndex = i; // индекс максимального элемента
-            for (int j = 0; j < i; j++) // проходим по не отсортированной последовательности
-            {
-                if (array[j].Score > array[maxIndex].Score)// ищем максимальный элемент
-                {
-                    maxIndex = j; // запоминаем индекс
-                }
-            }
+	class Cat : Animal
+	{
+		public Cat(string name)
+		{
+			Name = name;
+		}
+	}
 
-            // если нашли максимальный элемент, отличный от текущего числа
-            if (maxIndex != i)
-            {
-                // меняем местами
-                var temp = array[maxIndex];
-                array[maxIndex] = array[i];
-                array[i] = temp;
-            }
-        }
-    }​
+	class Dog : Animal
+	{
+		public Dog(string name)
+		{
+			Name = name;
+		}
+	}
+	class Program
+	{
+		static void Main()
+		{
+			List<Animal> animals = new List<Animal>
+			{
+				new Cat("Tom"),
+				new Dog("Spike"),
+				new Cat("Jerry"),
+				new Dog("Max"),
+			};
+			var result = animals.Where(animal => animal is Cat).Select(cat => cat.Name).Cast<string>();
+			Console.WriteLine(string.Join(" ", result));
+		}
+	}
 }
