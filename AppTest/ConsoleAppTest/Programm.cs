@@ -3,39 +3,23 @@ using System.Collections;
 
 namespace CSharpEssentials
 {
-	class Animal
-	{
-		public string Name { get; set; }
-	}
+    public static void Main()
+    {
+        var ticketCost = int.Parse(Console.ReadLine());
+        var windowSeatCost = int.Parse(Console.ReadLine());
+        var food = int.Parse(Console.ReadLine());
+        var m = int.Parse(Console.ReadLine());
 
-	class Cat : Animal
-	{
-		public Cat(string name)
-		{
-			Name = name;
-		}
-	}
-
-	class Dog : Animal
-	{
-		public Dog(string name)
-		{
-			Name = name;
-		}
-	}
-	class Program
-	{
-		static void Main()
-		{
-			List<Animal> animals = new List<Animal>
-			{
-				new Cat("Tom"),
-				new Dog("Spike"),
-				new Cat("Jerry"),
-				new Dog("Max"),
-			};
-			var result = animals.Where(animal => animal is Cat).Select(cat => cat.Name).Cast<string>();
-			Console.WriteLine(string.Join(" ", result));
-		}
-	}
+        if(m <= 3)
+        {
+            m = 0;
+        }
+        else
+        {
+            m = 200 * (m - 3);
+        }
+        
+        var result = ticketCost + windowSeatCost + food + m;
+        Console.WriteLine($"Полёт обойдётся в {result} рублей");
+    }
 }
