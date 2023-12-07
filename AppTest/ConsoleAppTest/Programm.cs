@@ -8,18 +8,11 @@
         return age >= 18;
     }
 }
-public class MainClass
+
+public class Program
 {
-    public static void Main()
+    static void Main()
     {
-      
-        
+
     }
-
-    public int CharCount(string s)
-    {
-        return s.Length;
-    } 
-
-
 }

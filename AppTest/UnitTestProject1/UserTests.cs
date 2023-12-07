@@ -15,7 +15,7 @@ namespace Tests
         {
             //arrange
             int age = 18;
-            bool expected = false;
+            bool expected = true;
 
             //act
             User user = new User();
