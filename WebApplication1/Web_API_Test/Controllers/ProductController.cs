@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Web_API_Test.Models;
-using Web_API_Test.Services;
+using WebDB_Test;
+
 
 namespace Web_API_Test.Controllers
 {
@@ -8,39 +8,44 @@ namespace Web_API_Test.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        
+        private readonly ProductService productService;
+        public ProductController(ProductService productService)
+        {
+            this.productService = productService;
+        }
+
         [HttpGet]
         public List<Product> Get()
         {
-            return ProductService.GetAll();
+            return productService.GetAll();
         }
 
        
         [HttpGet("{id}")]
-        public Product Get(int id)
+        public Product Get(Guid id)
         {
-            return ProductService.GetById(id);
+            return productService.GetById(id);
         }
 
         
         [HttpPost]
         public void Post(Product product)
         {
-            ProductService.Add(product);
+            productService.Add(product);
         }
 
        
         [HttpPut("{id}")]
-        public void Put(Product product, int id)
+        public void Put(Product product, Guid id)
         {
-            ProductService.Update(product, id);
+            productService.Update(product, id);
         }
 
        
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
-            ProductService.Delete(id);
+            productService.Delete(id);
         }
     }
 }
