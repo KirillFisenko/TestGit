@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web_API_Test", "Web_API_Test\Web_API_Test.csproj", "{4EAC5DBD-BFBA-4FBD-8941-75929CA4F450}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDB_Test", "WebDB_Test\WebDB_Test.csproj", "{78F7A77F-58E8-47B9-B280-6142E5E82988}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDB_Test", "WebDB_Test\WebDB_Test.csproj", "{78F7A77F-58E8-47B9-B280-6142E5E82988}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

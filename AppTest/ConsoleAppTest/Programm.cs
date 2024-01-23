@@ -1,18 +1,15 @@
-﻿public class User
+﻿public class Program
 {
-    public string Name { get; set; }
-    public int Age { get; set; }
-
-    public bool IsAdalt(int age)
-    {
-        return age >= 18;
-    }
-}
-
-public class Program
-{
-    static void Main()
-    {
-        
-    }
+	static int Do(int x)
+	{
+		static int Do(int x)
+		{
+			return x;
+		}
+		return x;
+	}
+	static void Main()
+	{
+		Console.WriteLine(Do(1));
+	}
 }
