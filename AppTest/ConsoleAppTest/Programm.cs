@@ -12,5 +12,5 @@
 	{
 		Console.WriteLine(Do(1));
 	}
-
+	//сделал task_1
 }
