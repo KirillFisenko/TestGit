@@ -1,7 +1,7 @@
 ﻿public class Program
 {
     private static void Main()
-	{         
-        //сделал task_1
+	{ 
+        //сделал task_3
     }	
 }
