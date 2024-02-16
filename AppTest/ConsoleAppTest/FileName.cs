@@ -8,5 +8,6 @@ namespace ConsoleAppTest
 {
     internal class FileName
     {
+        //сделал task_2
     }
 }
