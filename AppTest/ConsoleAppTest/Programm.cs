@@ -4,6 +4,8 @@ public class MainClass
 {
     public static void Main()
     {
-        // put your c# code here
+        var inputString = Console.ReadLine().Split(", ");
+        var resultHashSet = inputString.ToHashSet();
+        Console.WriteLine(string.Join(", ", resultHashSet));
     }
 }
