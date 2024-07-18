@@ -11,7 +11,7 @@ namespace LINQ
             var minDigit = number[0];
             var avgDigit = number[1];
             var maxDigit = number[2];
-            Console.WriteLine(maxDigit - minDigit == avgDigit ? "Числов ыуинтересное" : "Число неинтересное");
+            Console.WriteLine(maxDigit - minDigit == avgDigit ? "Числов ыуинтересное" : "Число неинтересное2");
         }
     }
 }
