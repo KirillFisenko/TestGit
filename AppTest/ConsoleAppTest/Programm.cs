@@ -13,6 +13,8 @@ public class MainClass
             Console.WriteLine(maxDigit - minDigit == avgDigit ? "Числов ыуинтересное" : "Число неинтересное2");
             //1
             //2
+            //сделал изменение 1
+            //сделал изменение 2
         }
     }
 }
