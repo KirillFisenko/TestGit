@@ -1,5 +1,35 @@
 ﻿//::c#
 //::code
+public class Program
+{
+    public static void RegisterUser()
+    {
+        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+        var userName = Console.ReadLine();
+        var newUser = new User()
+        {
+            FullName = userName
+        };
+
+        var isAdditionSuccessful = UsersService.Add(newUser);
+
+        if (isAdditionSuccessful)
+        {
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен\n");
+        }
+        else
+        {
+            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
+        }
+    }
+}
+
+//::header
+//using System;
+//using System.Collections.Generic;
+
+
+//::footer
 public class UsersService
 {
     /// <summary>
@@ -25,12 +55,6 @@ public class UsersService
     }
 }
 
-//::header
-//using System;
-//using System.Collections.Generic;
-
-
-//::footer
 public class MySqlConnection : IDisposable
 {
     public static bool WasOpenCalled = false;
@@ -60,6 +84,7 @@ public class MySqlParameter
     }
 }
 
+
 public class MySqlCommand : IDisposable
 {
     public static bool WasExecuteNonQueryCalled = false;
@@ -84,6 +109,7 @@ public class Constant
     public const string ConnectionString = "Server=localhost;Database=stepik;Uid=root;Pwd=;";
 }
 
+
 public class User
 {
     public string FullName { get; set; }
@@ -93,21 +119,10 @@ public class User
     public bool IsActive { get; set; } = true;
 }
 
-public class Program
+public class Program1
 {
     private static void Main(string[] args)
     {
-        var newUser = new User()
-        {
-            FullName = "userName"
-        };
-
-        var result = UsersService.Add(newUser);
-        Console.WriteLine(result);
-        Console.WriteLine(MySqlConnection.WasOpenCalled);
-        Console.WriteLine(MySqlConnection.WasDisposeCalled);
-        Console.WriteLine(MySqlParameter.AddWithValueCountCalled == 5);
-        Console.WriteLine(MySqlCommand.WasExecuteNonQueryCalled);
-        Console.WriteLine(MySqlCommand.WasDisposeCalled);
+        Program.RegisterUser();
     }
 }
