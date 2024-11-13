@@ -1,14 +1,13 @@
-﻿//::c#
-//::code
-public class Program
-{
-    public static void Main()
-    {
-        bool continueProgram = true;
+﻿::c#
+::code
 
-        while (continueProgram)
-        {
-            Console.WriteLine(@"
+    public static void Main()
+{
+    bool continueProgram = true;
+
+    while (continueProgram)
+    {
+        Console.WriteLine(@"
 ************************************************
 * Добро пожаловать на онлайн платформу Stepik! *
 ************************************************
@@ -21,53 +20,28 @@ public class Program
 ************************************************
 ");
 
-            string choice = Console.ReadLine();
+        string choice = Console.ReadLine();
 
-            switch (choice)
-            {
-                case "1":
-                    RegisterUser();
-                    break;
-                case "2":
-                    Console.WriteLine("До свидания!");
-                    continueProgram = false;
-                    break;
-                default:
-                    Console.WriteLine("Неверный выбор. Попробуйте снова.");
-                    break;
-            }
-        }
-    }
-
-
-    public static void RegisterUser()
-    {
-        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
-        var userName = Console.ReadLine();
-        var newUser = new User()
+        switch (choice)
         {
-            FullName = userName
-        };
-
-        var isAdditionSuccessful = UsersService.Add(newUser);
-
-        if (isAdditionSuccessful)
-        {
-            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
-        }
-        else
-        {
-            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
+            case "1":
+                RegisterUser();
+                break;
+            case "2":
+                Console.WriteLine("До свидания!");
+                continueProgram = false;
+                break;
+            default:
+                Console.WriteLine("Неверный выбор. Попробуйте снова.");
+                break;
         }
     }
 }
 
-//::header
-//using System;
-//using System.Collections.Generic;
+::header
+using System;
+using System.Collections.Generic;
 
-
-//::footer
 public class UsersService
 {
     /// <summary>
@@ -155,4 +129,31 @@ public class User
     public DateTime JoinDate { get; set; } = DateTime.Now;
     public string? Avatar { get; set; }
     public bool IsActive { get; set; } = true;
+}
+
+public class Program
+{
+::footer
+
+        public static void RegisterUser()
+    {
+        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+        var userName = Console.ReadLine();
+        var newUser = new User()
+        {
+            FullName = userName
+        };
+
+        var isAdditionSuccessful = UsersService.Add(newUser);
+
+        if (isAdditionSuccessful)
+        {
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
+        }
+        else
+        {
+            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
+        }
+    }
+
 }
