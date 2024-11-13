@@ -2,6 +2,44 @@
 //::code
 public class Program
 {
+    public static void Main()
+    {
+        bool continueProgram = true;
+
+        while (continueProgram)
+        {
+            Console.WriteLine(@"
+************************************************
+* Добро пожаловать на онлайн платформу Stepik! *
+************************************************
+
+Выберите действие (введите число и нажмите Enter):
+
+1. Зарегистрироваться
+2. Закрыть приложение
+
+************************************************
+");
+
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    RegisterUser();
+                    break;
+                case "2":
+                    Console.WriteLine("До свидания!");
+                    continueProgram = false;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор. Попробуйте снова.");
+                    break;
+            }
+        }
+    }
+
+
     public static void RegisterUser()
     {
         Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
@@ -15,7 +53,7 @@ public class Program
 
         if (isAdditionSuccessful)
         {
-            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен\n");
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
         }
         else
         {
@@ -117,12 +155,4 @@ public class User
     public DateTime JoinDate { get; set; } = DateTime.Now;
     public string? Avatar { get; set; }
     public bool IsActive { get; set; } = true;
-}
-
-public class Program1
-{
-    private static void Main(string[] args)
-    {
-        Program.RegisterUser();
-    }
 }
