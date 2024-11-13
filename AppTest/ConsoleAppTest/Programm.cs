@@ -1,42 +1,38 @@
-﻿//::c#
-//::code
+﻿::c#
+::code
 
-public class UsersService
+
+/// <summary>
+/// Получение пользователя из таблицы users
+/// </summary>
+/// <param name="fullName">Полное имя пользлователя</param>
+/// <returns>User</returns>
+public static User Get(string fullName)
 {
-    /// <summary>
-    /// Получение пользователя из таблицы users
-    /// </summary>
-    /// <param name="fullName">Полное имя пользлователя</param>
-    /// <returns>User</returns>
-    public static User Get(string fullName)
-    {
-        var user = new User();
-        using var connection = new MySqlConnection(Constant.ConnectionString);
-        connection.Open();
-        var query = @"SELECT * FROM users
+    var user = new User();
+    using var connection = new MySqlConnection(Constant.ConnectionString);
+    connection.Open();
+    var query = @"SELECT * FROM users
                       WHERE full_name = @FullName AND is_active = 1;";
-        using var command = new MySqlCommand(query, connection);
-        command.Parameters.AddWithValue("@FullName", fullName);
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            user.FullName = reader.IsDBNull(1) ? null : reader.GetString(1);
-            user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
-            user.JoinDate = reader.GetDateTime(3);
-            user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
-            user.IsActive = reader.GetBoolean(5);
-        }
-
-        return user;
+    using var command = new MySqlCommand(query, connection);
+    command.Parameters.AddWithValue("@FullName", fullName);
+    using var reader = command.ExecuteReader();
+    while (reader.Read())
+    {
+        user.FullName = reader.IsDBNull(1) ? null : reader.GetString(1);
+        user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
+        user.JoinDate = reader.GetDateTime(3);
+        user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
+        user.IsActive = reader.GetBoolean(5);
     }
+
+    return user;
 }
 
-//::header
-//using System;
-//using System.Reflection.PortableExecutable;
 
-
-//::footer
+::header
+using System;
+using System.Reflection.PortableExecutable;
 
 public class MySqlConnection : IDisposable
 {
@@ -159,4 +155,12 @@ public class Program
         Console.WriteLine(MySqlConnection.WasDisposeCalled);
         Console.WriteLine(MySqlCommand.WasDisposeCalled);
     }
+}
+
+public class UsersService
+{
+::footer
+
+
+
 }
