@@ -1,35 +1,32 @@
-﻿//::c#
-//::code
-public class Program
-{
+﻿::c#
+::code
+
     public static void RegisterUser()
+{
+    Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+    var userName = Console.ReadLine();
+    var newUser = new User()
     {
-        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
-        var userName = Console.ReadLine();
-        var newUser = new User()
-        {
-            FullName = userName
-        };
+        FullName = userName
+    };
 
-        var isAdditionSuccessful = UsersService.Add(newUser);
+    var isAdditionSuccessful = UsersService.Add(newUser);
 
-        if (isAdditionSuccessful)
-        {
-            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
-        }
-        else
-        {
-            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
-        }
+    if (isAdditionSuccessful)
+    {
+        Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
+    }
+    else
+    {
+        Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
     }
 }
 
-//::header
-//using System;
-//using System.Collections.Generic;
 
+::header
+using System;
+using System.Collections.Generic;
 
-//::footer
 public class UsersService
 {
     /// <summary>
@@ -119,10 +116,16 @@ public class User
     public bool IsActive { get; set; } = true;
 }
 
-public class Program1
+public class Program
 {
+
+::footer
+
+
+
     private static void Main(string[] args)
     {
         Program.RegisterUser();
     }
+
 }
