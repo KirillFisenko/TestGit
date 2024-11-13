@@ -15,7 +15,7 @@ public class Program
 
         if (isAdditionSuccessful)
         {
-            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен\n");
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
         }
         else
         {
