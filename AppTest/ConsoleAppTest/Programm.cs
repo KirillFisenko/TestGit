@@ -6,8 +6,8 @@ public class UsersService
     /// Добавление нового пользователя в таблицу users
     /// </summary>
     /// <param name="user">Новый пользователь</param>
-    /// <returns>Количество вставленных записей</returns>
-    public static int Add(User user)
+    /// <returns>Удалось ли добавить пользователя</returns>
+    public static bool Add(User user)
     {
         using var connection = new MySqlConnection(Constant.ConnectionString);
         connection.Open();
@@ -21,13 +21,13 @@ public class UsersService
         command.Parameters.AddWithValue("@Avatar", user.Avatar);
         command.Parameters.AddWithValue("@IsActive", user.IsActive);
         var rowsAffected = command.ExecuteNonQuery();
-        return rowsAffected;
+        return rowsAffected == 1;
     }
 }
 
 //::header
 //using System;
-
+//using System.Collections.Generic;
 
 
 //::footer
@@ -59,7 +59,6 @@ public class MySqlParameter
         }
     }
 }
-
 
 public class MySqlCommand : IDisposable
 {
@@ -104,7 +103,7 @@ public class Program
         };
 
         var result = UsersService.Add(newUser);
-        Console.WriteLine(result == 1);
+        Console.WriteLine(result);
         Console.WriteLine(MySqlConnection.WasOpenCalled);
         Console.WriteLine(MySqlConnection.WasDisposeCalled);
         Console.WriteLine(MySqlParameter.AddWithValueCountCalled == 5);
@@ -112,13 +111,3 @@ public class Program
         Console.WriteLine(MySqlCommand.WasDisposeCalled);
     }
 }
-
-
-
-
-
-
-
-
-
-
