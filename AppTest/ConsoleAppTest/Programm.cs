@@ -1,40 +1,92 @@
 ﻿//::c#
 //::code
 
-public class UsersService
+public class Program
 {
-    /// <summary>
-    /// Получение пользователя из таблицы users
-    /// </summary>
-    /// <param name="fullName">Полное имя пользлователя</param>
-    /// <returns>User</returns>
-    public static User Get(string fullName)
+    public static void Main()
     {
-        var user = new User();
-        using var connection = new MySqlConnection(Constant.ConnectionString);
-        connection.Open();
-        var query = @"SELECT * FROM users
-                      WHERE full_name = @FullName AND is_active = 1;";
-        using var command = new MySqlCommand(query, connection);
-        command.Parameters.AddWithValue("@FullName", fullName);
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            user.FullName = reader.IsDBNull(1) ? null : reader.GetString(1);
-            user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
-            user.JoinDate = reader.GetDateTime(3);
-            user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
-            user.IsActive = reader.GetBoolean(5);
-        }
+        bool continueProgram = true;
 
-        return user;
+        while (continueProgram)
+        {
+            Console.WriteLine(@"
+************************************************
+* Добро пожаловать на онлайн платформу Stepik! *
+************************************************
+
+Выберите действие (введите число и нажмите Enter):
+
+1. Войти
+2. Зарегистрироваться
+3. Закрыть приложение
+
+************************************************
+");
+
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    LoginUser();
+                    break;
+                case "2":
+                    RegisterUser();
+                    break;
+                case "3":
+                    Console.WriteLine("До свидания!");
+                    continueProgram = false;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор. Попробуйте снова.");
+                    break;
+            }
+        }
+    }
+
+    public static void RegisterUser()
+    {
+        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+        var userName = Console.ReadLine();
+        var newUser = new User()
+        {
+            FullName = userName
+        };
+
+        var isAdditionSuccessful = UsersService.Add(newUser);
+
+        if (isAdditionSuccessful)
+        {
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен {newUser.JoinDate}\n");
+        }
+        else
+        {
+            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
+        }
+    }
+
+    public static void LoginUser()
+    {
+        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+        var userName = Console.ReadLine();
+        var user = UsersService.Get(userName);
+
+        if (user.FullName != null)
+        {
+            Console.WriteLine($"Пользователь '{user.FullName}' успешно вошел {DateTime.Now}\n");
+        }
+        else
+        {
+            Console.WriteLine($"Пользователь не найден, произведен выход на главную страницу\n");
+        }
     }
 }
+
 
 //::header
 //using System;
 //using System.Reflection.PortableExecutable;
-
+//using System.Collections.Generic;
 
 //::footer
 
@@ -142,21 +194,54 @@ public class User
     public string? Avatar { get; set; }
     public bool IsActive { get; set; } = true;
 }
-
-
-public class Program
+public class UsersService
 {
-    public static void Main()
+    /// <summary>
+    /// Добавление нового пользователя в таблицу users
+    /// </summary>
+    /// <param name="user">Новый пользователь</param>
+    /// <returns>Удалось ли добавить пользователя</returns>
+    public static bool Add(User user)
     {
-        var result = UsersService.Get("");
-        Console.WriteLine(string.IsNullOrEmpty(result.FullName));
-        Console.WriteLine(string.IsNullOrEmpty(result.Details));
-        Console.WriteLine(result.JoinDate.Date == DateTime.Today.Date);
-        Console.WriteLine(string.IsNullOrEmpty(result.Avatar));
-        Console.WriteLine(result.IsActive);
+        using var connection = new MySqlConnection(Constant.ConnectionString);
+        connection.Open();
+        var query = @"
+                INSERT INTO users (full_name, details, join_date, avatar, is_active)
+                VALUES (@FullName, @Details, @JoinDate, @Avatar, @IsActive)";
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@FullName", user.FullName);
+        command.Parameters.AddWithValue("@Details", user.Details);
+        command.Parameters.AddWithValue("@JoinDate", user.JoinDate);
+        command.Parameters.AddWithValue("@Avatar", user.Avatar);
+        command.Parameters.AddWithValue("@IsActive", user.IsActive);
+        var rowsAffected = command.ExecuteNonQuery();
+        return rowsAffected == 1;
+    }
 
-        Console.WriteLine(MySqlConnection.WasOpenCalled);
-        Console.WriteLine(MySqlConnection.WasDisposeCalled);
-        Console.WriteLine(MySqlCommand.WasDisposeCalled);
+    /// <summary>
+    /// Получение пользователя из таблицы users
+    /// </summary>
+    /// <param name="fullName">Полное имя пользлователя</param>
+    /// <returns>User</returns>
+    public static User Get(string fullName)
+    {
+        var user = new User();
+        using var connection = new MySqlConnection(Constant.ConnectionString);
+        connection.Open();
+        var query = @"SELECT * FROM users
+                      WHERE full_name = @FullName AND is_active = 1;";
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@FullName", fullName);
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            user.FullName = reader.IsDBNull(1) ? null : reader.GetString(1);
+            user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
+            user.JoinDate = reader.GetDateTime(3);
+            user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
+            user.IsActive = reader.GetBoolean(5);
+        }
+
+        return user;
     }
 }
