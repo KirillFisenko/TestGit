@@ -1,94 +1,23 @@
-﻿//::c#
-//::code
+﻿::c#
+::code
 
-public class Program
-{
+
     public static void Main()
-    {
-        bool continueProgram = true;
+{
+    // Обновить логику
+}
 
-        while (continueProgram)
-        {
-            Console.WriteLine(@"
-************************************************
-* Добро пожаловать на онлайн платформу Stepik! *
-************************************************
-
-Выберите действие (введите число и нажмите Enter):
-
-1. Войти
-2. Зарегистрироваться
-3. Закрыть приложение
-
-************************************************
-");
-
-            string choice = Console.ReadLine();
-
-            switch (choice)
-            {
-                case "1":
-                    LoginUser();
-                    break;
-                case "2":
-                    RegisterUser();
-                    break;
-                case "3":
-                    Console.WriteLine("До свидания!");
-                    continueProgram = false;
-                    break;
-                default:
-                    Console.WriteLine("Неверный выбор. Попробуйте снова.");
-                    break;
-            }
-        }
-    }
-
-    public static void RegisterUser()
-    {
-        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
-        var userName = Console.ReadLine();
-        var newUser = new User()
-        {
-            FullName = userName
-        };
-
-        var isAdditionSuccessful = UsersService.Add(newUser);
-
-        if (isAdditionSuccessful)
-        {
-            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен {newUser.JoinDate}\n");
-        }
-        else
-        {
-            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
-        }
-    }
-
-    public static void LoginUser()
-    {
-        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
-        var userName = Console.ReadLine();
-        var user = UsersService.Get(userName);
-
-        if (user.FullName != null)
-        {
-            Console.WriteLine($"Пользователь '{user.FullName}' успешно вошел {DateTime.Now}\n");
-        }
-        else
-        {
-            Console.WriteLine($"Пользователь не найден, произведен выход на главную страницу\n");
-        }
-    }
+public static void LoginUser()
+{
+    // Реализовать метод
 }
 
 
-//::header
-//using System;
-//using System.Reflection.PortableExecutable;
-//using System.Collections.Generic;
 
-//::footer
+::header
+using System;
+using System.Reflection.PortableExecutable;
+using System.Collections.Generic;
 
 public class MySqlConnection : IDisposable
 {
@@ -196,6 +125,7 @@ public class User
 }
 public class UsersService
 {
+    public static List<string> users = new List<string>();
     /// <summary>
     /// Добавление нового пользователя в таблицу users
     /// </summary>
@@ -215,6 +145,7 @@ public class UsersService
         command.Parameters.AddWithValue("@Avatar", user.Avatar);
         command.Parameters.AddWithValue("@IsActive", user.IsActive);
         var rowsAffected = command.ExecuteNonQuery();
+        users.Add(user.FullName);
         return rowsAffected == 1;
     }
 
@@ -233,15 +164,40 @@ public class UsersService
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@FullName", fullName);
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            user.FullName = reader.IsDBNull(1) ? null : reader.GetString(1);
-            user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
-            user.JoinDate = reader.GetDateTime(3);
-            user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
-            user.IsActive = reader.GetBoolean(5);
-        }
 
-        return user;
+        user.FullName = fullName;
+        user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
+        user.JoinDate = reader.GetDateTime(3);
+        user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
+        user.IsActive = reader.GetBoolean(5);
+
+
+        return users.Contains(fullName) ? user : new User();
+    }
+}
+
+public class Program
+{
+::footer
+
+        public static void RegisterUser()
+    {
+        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+        var userName = Console.ReadLine();
+        var newUser = new User()
+        {
+            FullName = userName
+        };
+
+        var isAdditionSuccessful = UsersService.Add(newUser);
+
+        if (isAdditionSuccessful)
+        {
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
+        }
+        else
+        {
+            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
+        }
     }
 }
