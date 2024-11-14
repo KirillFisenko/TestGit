@@ -1,31 +1,12 @@
-﻿::c#
-::code
-
-    public static void RegisterUser()
-{
-    Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
-    var userName = Console.ReadLine();
-    var newUser = new User()
-    {
-        FullName = userName
-    };
-
-    var isAdditionSuccessful = UsersService.Add(newUser);
-
-    if (isAdditionSuccessful)
-    {
-        Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
-    }
-    else
-    {
-        Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
-    }
-}
+﻿//::c#
+//::code
 
 
-::header
-using System;
-using System.Collections.Generic;
+
+
+//::header
+//using System;
+//using System.Collections.Generic;
 
 public class UsersService
 {
@@ -36,6 +17,7 @@ public class UsersService
     /// <returns>Удалось ли добавить пользователя</returns>
     public static bool Add(User user)
     {
+
         using var connection = new MySqlConnection(Constant.ConnectionString);
         connection.Open();
         var query = @"
@@ -48,7 +30,8 @@ public class UsersService
         command.Parameters.AddWithValue("@Avatar", user.Avatar);
         command.Parameters.AddWithValue("@IsActive", user.IsActive);
         var rowsAffected = command.ExecuteNonQuery();
-        return rowsAffected == 1;
+
+        return user.FullName == "false" ? false : rowsAffected == 1;
     }
 }
 
@@ -71,12 +54,23 @@ public class MySqlConnection : IDisposable
 public class MySqlParameter
 {
     public static int AddWithValueCountCalled;
+    public static int nullCount;
     public MySqlParameter(string parameterName, object value) { }
     public void AddWithValue(string parameterName, object value)
     {
+        if (value == null)
+        {
+            nullCount++;
+        }
+
         if (parameterName.StartsWith("@"))
         {
             AddWithValueCountCalled++;
+        }
+
+        if (nullCount >= 3)
+        {
+            throw new Exception();
         }
     }
 }
@@ -119,7 +113,7 @@ public class User
 public class Program
 {
 
-::footer
+    //::footer
 
 
 
@@ -127,5 +121,24 @@ public class Program
     {
         Program.RegisterUser();
     }
+    public static void RegisterUser()
+    {
+        Console.WriteLine("Введите имя и фамилию через пробел и нажмите Enter:");
+        var userName = Console.ReadLine();
+        var newUser = new User()
+        {
+            FullName = userName
+        };
 
+        var isAdditionSuccessful = UsersService.Add(newUser);
+
+        if (isAdditionSuccessful)
+        {
+            Console.WriteLine($"Пользователь '{newUser.FullName}' успешно добавлен.\n");
+        }
+        else
+        {
+            Console.WriteLine($"Произошла ошибка, произведен выход на главную страницу\n");
+        }
+    }
 }
