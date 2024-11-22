@@ -1,42 +1,119 @@
 ﻿::c#
 ::code
-public class Course
+
+/// <summary>
+/// Получение общего количества курсов
+/// </summary>
+public static int GetTotalCount()
 {
-    public string Title { get; set; }
-    public string? Summary { get; set; }
-    public string? Photo { get; set; }
+    using var connection = new MySqlConnection(Constant.ConnectionString);
+    connection.Open();
+
+    var query = "SELECT COUNT(*) FROM courses;";
+
+    using var command = new MySqlCommand(query, connection);
+    var result = command.ExecuteScalar();
+
+    return result != null ? Convert.ToInt32(result) : 0;
 }
 
 ::header
 using System;
+using System.Collections.Generic;
 
-namespace Sandbox
+
+
+public class MySqlConnection : IDisposable
 {
-    internal class Program
+    public static bool WasOpenCalled = false;
+    public static bool WasDisposeCalled = false;
+    public MySqlConnection(string connectionString) { }
+
+    public void Open()
     {
+        WasOpenCalled = true;
+    }
+    public void Dispose()
+    {
+        WasDisposeCalled = true;
+    }
+}
 
-        //::footer
-        private static void Main(string[] args)
+public class MySqlParameter
+{
+    public static int AddWithValueCountCalled;
+    public MySqlParameter(string parameterName, object value) { }
+    public void AddWithValue(string parameterName, object value)
+    {
+        if (parameterName.StartsWith("@"))
         {
-            var newCourse = new Course()
-            {
-                Title = "Title"
-            };
-            Console.WriteLine(newCourse.Title == "Title");
-            Console.WriteLine(newCourse.Summary == null);
-            Console.WriteLine(newCourse.Photo == null);
-
-            newCourse = new Course()
-            {
-                Title = "Title",
-                Summary = "Summary",
-                Photo = "Photo",
-            };
-            Console.WriteLine(newCourse.Title == "Title");
-            Console.WriteLine(newCourse.Summary == "Summary");
-            Console.WriteLine(newCourse.Photo == "Photo");
+            AddWithValueCountCalled++;
         }
     }
+}
+
+
+public class MySqlCommand : IDisposable
+{
+    public static bool WasExecuteNonQueryCalled = false;
+    public static bool WasDisposeCalled = false;
+    public static bool WasExecuteScalarCalled = false;
+    public new MySqlParameter Parameters { get; } = new MySqlParameter("", "");
+    public string CommandText { get; internal set; }
+    public MySqlCommand(string cmdText, MySqlConnection connection) { }
+
+    public int ExecuteNonQuery()
+    {
+        WasExecuteNonQueryCalled = true;
+        return 1;
+    }
+
+    public object ExecuteScalar()
+    {
+        WasExecuteScalarCalled = true;
+        return 10;
+    }
+
+    public void Dispose()
+    {
+        WasDisposeCalled = true;
+    }
+}
+
+public class Constant
+{
+    public const string ConnectionString = "Server=localhost;Database=stepik;Uid=root;Pwd=;";
+}
+
+
+public class User
+{
+    public string FullName { get; set; }
+    public string? Details { get; set; }
+    public DateTime JoinDate { get; set; } = DateTime.Now;
+    public string? Avatar { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        CoursesService.GetTotalCount();
+        Console.WriteLine(MySqlConnection.WasDisposeCalled);
+        Console.WriteLine(MySqlConnection.WasOpenCalled);
+        Console.WriteLine(MySqlCommand.WasDisposeCalled);
+        Console.WriteLine(MySqlCommand.WasExecuteScalarCalled);
+    }
+}
+
+
+public class CoursesService
+{
+    ::footer
+
+
+
 }
 
 
