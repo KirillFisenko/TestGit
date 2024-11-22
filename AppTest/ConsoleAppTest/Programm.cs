@@ -1,28 +1,52 @@
-﻿::c#
-::code
+﻿//::c#
+//::code
 
 /// <summary>
-/// Получение общего количества курсов
+/// Получение списка курсов пользователя
 /// </summary>
-public static int GetTotalCount()
+/// <param name="fullName">Полное имя пользователя</param>
+/// <returns>List<Course></returns>
+public static List<Course> Get(string fullName)
 {
+    var courses = new List<Course>();
+
     using var connection = new MySqlConnection(Constant.ConnectionString);
     connection.Open();
 
-    var query = "SELECT COUNT(*) FROM courses;";
+    var query = @"
+            SELECT title, summary, photo
+            FROM user_courses
+            JOIN courses ON user_courses.course_id = courses.id
+            JOIN users ON users.id = user_courses.user_id
+            WHERE users.full_name = @fullName AND users.is_active = 1
+            ORDER BY user_courses.last_viewed DESC;";
 
     using var command = new MySqlCommand(query, connection);
-    var result = command.ExecuteScalar();
+    var fullNameParam = new MySqlParameter("@fullName", fullName);
+    command.Parameters.Add(fullNameParam);
 
-    return result != null ? Convert.ToInt32(result) : 0;
+    using var reader = command.ExecuteReader();
+    while (reader.Read())
+    {
+        var course = new Course
+        {
+            Title = reader.GetString(0),
+            Summary = reader.IsDBNull(1) ? null : reader.GetString(1),
+            Photo = reader.IsDBNull(2) ? null : reader.GetString(2)
+        };
+        courses.Add(course);
+    }
+
+    return courses;
 }
 
-::header
-using System;
-using System.Collections.Generic;
 
 
-
+//::header
+//using System;
+//using System.Reflection.PortableExecutable;
+//using System.Collections.Generic;
+//using System.Linq;
 public class MySqlConnection : IDisposable
 {
     public static bool WasOpenCalled = false;
@@ -39,9 +63,44 @@ public class MySqlConnection : IDisposable
     }
 }
 
+public sealed class MySqlDataReader : IDisposable
+{
+    public bool read = false;
+    public MySqlCommand Command { get; set; }
+
+    public void Dispose() { }
+
+    public bool GetBoolean(int v)
+    {
+        return true;
+    }
+
+    public DateTime GetDateTime(int v)
+    {
+        return DateTime.UtcNow;
+    }
+
+    public string GetString(int v)
+    {
+        return "";
+    }
+
+    public bool IsDBNull(int v)
+    {
+        return false;
+    }
+
+    public bool Read()
+    {
+        read = !read;
+        return read;
+    }
+}
+
 public class MySqlParameter
 {
     public static int AddWithValueCountCalled;
+    public static bool WasAddCalled = false;
     public MySqlParameter(string parameterName, object value) { }
     public void AddWithValue(string parameterName, object value)
     {
@@ -50,6 +109,11 @@ public class MySqlParameter
             AddWithValueCountCalled++;
         }
     }
+
+    public void Add(MySqlParameter fullNameParam)
+    {
+        WasAddCalled = true;
+    }
 }
 
 
@@ -57,7 +121,8 @@ public class MySqlCommand : IDisposable
 {
     public static bool WasExecuteNonQueryCalled = false;
     public static bool WasDisposeCalled = false;
-    public static bool WasExecuteScalarCalled = false;
+    public static bool WasExecuteReaderCalled = false;
+
     public new MySqlParameter Parameters { get; } = new MySqlParameter("", "");
     public string CommandText { get; internal set; }
     public MySqlCommand(string cmdText, MySqlConnection connection) { }
@@ -68,10 +133,10 @@ public class MySqlCommand : IDisposable
         return 1;
     }
 
-    public object ExecuteScalar()
+    public MySqlDataReader ExecuteReader()
     {
-        WasExecuteScalarCalled = true;
-        return 10;
+        WasExecuteReaderCalled = true;
+        return new MySqlDataReader();
     }
 
     public void Dispose()
@@ -95,26 +160,39 @@ public class User
     public bool IsActive { get; set; } = true;
 }
 
+public class Course
+{
+    public string Title { get; set; }
+    public string? Summary { get; set; }
+    public string? Photo { get; set; }
+}
+
+
+
 public class Program
 {
     public static void Main()
     {
-        CoursesService.GetTotalCount();
-        Console.WriteLine(MySqlConnection.WasDisposeCalled);
+        var result = CoursesService.Get("").FirstOrDefault();
+
+        Console.WriteLine(string.IsNullOrEmpty(result.Title));
+        Console.WriteLine(string.IsNullOrEmpty(result.Summary));
+        Console.WriteLine(string.IsNullOrEmpty(result.Photo));
+
+        Console.WriteLine(MySqlCommand.WasExecuteReaderCalled);
         Console.WriteLine(MySqlConnection.WasOpenCalled);
+        Console.WriteLine(MySqlConnection.WasDisposeCalled);
         Console.WriteLine(MySqlCommand.WasDisposeCalled);
-        Console.WriteLine(MySqlCommand.WasExecuteScalarCalled);
+        Console.WriteLine(MySqlParameter.WasAddCalled);
+
+
     }
 }
 
-
 public class CoursesService
 {
-    ::footer
+    //::footer
 
 
 
 }
-
-
-
