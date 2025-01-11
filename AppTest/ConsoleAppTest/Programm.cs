@@ -1,39 +1,26 @@
 ﻿::c#
 ::code
 
-
-/// <summary>
-/// Получение пользователя из таблицы users
-/// </summary>
-/// <param name="fullName">Полное имя пользлователя</param>
-/// <returns>User</returns>
-public static User Get(string fullName)
+public class CommentsService
 {
-    var user = new User();
-    using var connection = new MySqlConnection(Constant.ConnectionString);
-    connection.Open();
-    var query = @"SELECT * FROM users
-                      WHERE full_name = @FullName AND is_active = 1;";
-    using var command = new MySqlCommand(query, connection);
-    command.Parameters.AddWithValue("@FullName", fullName);
-    using var reader = command.ExecuteReader();
-    while (reader.Read())
+    /// <summary>
+    /// Получение всех комментариев к курсу
+    /// </summary>
+    /// <param name="id">id курса</param>
+    /// <returns>Список комментариев</returns>
+    public static List<Comment> Get(int id)
     {
-        user.FullName = reader.IsDBNull(1) ? null : reader.GetString(1);
-        user.Details = reader.IsDBNull(2) ? null : reader.GetString(2);
-        user.JoinDate = reader.GetDateTime(3);
-        user.Avatar = reader.IsDBNull(4) ? null : reader.GetString(4);
-        user.IsActive = reader.GetBoolean(5);
+        // Реализовать метод
     }
-
-    return user;
 }
+
 
 
 ::header
 using System;
 using System.Reflection.PortableExecutable;
-
+using System.Collections.Generic;
+using System.Linq;
 public class MySqlConnection : IDisposable
 {
     public static bool WasOpenCalled = false;
@@ -50,8 +37,9 @@ public class MySqlConnection : IDisposable
     }
 }
 
-public sealed class MySqlDataReader : IDisposable
+public class MySqlDataReader : IDisposable
 {
+    public bool read = false;
     public MySqlCommand Command { get; set; }
 
     public void Dispose() { }
@@ -71,6 +59,31 @@ public sealed class MySqlDataReader : IDisposable
         return "";
     }
 
+    public int GetInt32(int v)
+    {
+        return 1;
+    }
+
+    public bool GetBoolean(string v)
+    {
+        return true;
+    }
+
+    public DateTime GetDateTime(string v)
+    {
+        return DateTime.UtcNow;
+    }
+
+    public string GetString(string v)
+    {
+        return "";
+    }
+
+    public int GetInt32(string v)
+    {
+        return 1;
+    }
+
     public bool IsDBNull(int v)
     {
         return false;
@@ -78,13 +91,15 @@ public sealed class MySqlDataReader : IDisposable
 
     public bool Read()
     {
-        return false;
+        read = !read;
+        return read;
     }
 }
 
 public class MySqlParameter
 {
     public static int AddWithValueCountCalled;
+    public static bool WasAddCalled = false;
     public MySqlParameter(string parameterName, object value) { }
     public void AddWithValue(string parameterName, object value)
     {
@@ -92,6 +107,11 @@ public class MySqlParameter
         {
             AddWithValueCountCalled++;
         }
+    }
+
+    public void Add(MySqlParameter fullNameParam)
+    {
+        WasAddCalled = true;
     }
 }
 
@@ -139,28 +159,35 @@ public class User
     public bool IsActive { get; set; } = true;
 }
 
+public class Course
+{
+    public string Title { get; set; }
+    public string? Summary { get; set; }
+    public string? Photo { get; set; }
+}
+
+public class Comment
+{
+    public int Id { get; set; }
+    public string Text { get; set; }
+    public DateTime Time { get; set; }
+}
+
 
 public class Program
 {
     public static void Main()
     {
-        var result = UsersService.Get("");
-        Console.WriteLine(string.IsNullOrEmpty(result.FullName));
-        Console.WriteLine(string.IsNullOrEmpty(result.Details));
-        Console.WriteLine(result.JoinDate.Date == DateTime.Today.Date);
-        Console.WriteLine(string.IsNullOrEmpty(result.Avatar));
-        Console.WriteLine(result.IsActive);
+        var result = CommentsService.Get(0).FirstOrDefault();
 
+        Console.WriteLine(result.Id == 1);
+        Console.WriteLine(string.IsNullOrEmpty(result.Text));
+        Console.WriteLine(result.Time.Date == DateTime.UtcNow.Date);
+
+        Console.WriteLine(MySqlCommand.WasExecuteReaderCalled);
         Console.WriteLine(MySqlConnection.WasOpenCalled);
         Console.WriteLine(MySqlConnection.WasDisposeCalled);
         Console.WriteLine(MySqlCommand.WasDisposeCalled);
+        Console.WriteLine(MySqlParameter.WasAddCalled);
     }
-}
-
-public class UsersService
-{
-::footer
-
-
-
 }
